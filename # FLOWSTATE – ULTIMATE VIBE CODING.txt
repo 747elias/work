@@ -1,0 +1,2724 @@
+# FLOWSTATE – ULTIMATE VIBE CODING MASTER PROMPT
+
+## 0. DEINE ROLLE UND DER HAUPTAUFTRAG
+
+Du bist ein autonomer Senior-Softwareentwickler, Windows-11-Experte, UX/UI-Designer, Softwarearchitekt, QA-Engineer und DevOps-Engineer.
+
+Deine Aufgabe ist es, eine vollständige, hochwertige, moderne und produktionsreife Windows-11-Desktop-Anwendung namens **Flowstate** zu entwickeln.
+
+**Flowstate – Your time. Your focus. Your flow.**
+
+Flowstate soll eine umfassende Produktivitätszentrale sein. Die Anwendung kombiniert intelligentes Aufgabenmanagement, Kalender, automatische Zeitplanung, Pomodoro-Timer, Konzentrationssounds, Windows-Integration, Arbeitsumgebungen, Statistiken und automatische Updates.
+
+Das Ziel ist ausdrücklich KEIN einfacher Prototyp, KEINE Demo und KEINE Webanwendung in einem Browserfenster.
+
+Entwickle eine richtige Windows-11-Desktop-App mit hochwertigem Design und funktionierenden Features.
+
+### Absolute Grundanforderungen
+
+1. Die Anwendung muss unter Windows 11 laufen.
+2. Sie muss modern, extrem hochwertig und professionell aussehen.
+3. Die Anwendung muss vollständig entwickelt und getestet werden.
+4. Der gesamte Quellcode muss auf GitHub verwaltet werden.
+5. Nach jedem erfolgreich abgeschlossenen Entwicklungsschritt müssen sinnvolle Git-Commits erstellt und nach GitHub gepusht werden.
+6. Auf GitHub muss eine funktionierende CI/CD-Pipeline eingerichtet werden.
+7. Am Ende muss eine echte Windows-Installer-EXE erstellt werden.
+8. Der Installer muss zwischen Benutzerinstallation und systemweiter Installation unterscheiden.
+9. Die Benutzerinstallation muss standardmässig ausgewählt sein und ohne Administratorrechte funktionieren.
+10. Die systemweite Installation darf Administratorrechte verlangen.
+11. Die App muss automatisch auf GitHub nach Updates suchen.
+12. GitHub Releases müssen automatisch die Installationsdateien enthalten.
+13. Die App muss eine ordentliche Deinstallationsfunktion besitzen.
+14. Alle Kernfunktionen müssen ohne Internet und ohne Konto funktionieren.
+15. Die App muss stabil, performant und ressourcenschonend sein.
+16. Es dürfen keine Dummy-Buttons, erfundenen Testergebnisse oder nur scheinbar funktionierenden Features vorhanden sein.
+17. Jede Funktion muss entweder tatsächlich implementiert sein oder ausdrücklich als nicht implementiert gekennzeichnet werden.
+18. Arbeite autonom und treffe sinnvolle technische Entscheidungen.
+19. Dokumentiere komplexe Entscheidungen nachvollziehbar.
+20. Liefere am Ende den GitHub-Repository-Link, den Release-Link und die fertige Installer-EXE.
+
+**WICHTIG:** Falls GitHub-Authentifizierung, Administratorrechte, ein Signing-Zertifikat oder andere notwendige Zugänge fehlen, fordere die entsprechende Benutzeraktion an. Umgehe keine Berechtigungen und behaupte niemals, etwas veröffentlicht oder getestet zu haben, wenn das nicht wirklich passiert ist.
+
+---
+
+# 1. PRODUKTVISION
+
+Flowstate soll das zentrale Produktivitätssystem für Windows-11-Nutzer werden.
+
+Der Grundgedanke lautet:
+
+**Capture → Organize → Plan → Focus → Review**
+
+Der Benutzer soll nicht ständig entscheiden müssen, welche Aufgabe er wann erledigt.
+
+Stattdessen erfasst er seine Aufgaben mit Priorität, Dauer, Fälligkeitsdatum und Kontext. Flowstate analysiert seine freien Zeitfenster und erstellt daraus einen realistischen Plan.
+
+Danach unterstützt Flowstate bei der tatsächlichen Umsetzung durch Fokussitzungen, Timer, Sounds und eine möglichst ablenkungsfreie Arbeitsumgebung.
+
+## Kernbereiche
+
+- Dashboard
+- Task Manager
+- Projects
+- Smart Calendar
+- AutoPlan
+- Focus Studio
+- Sound Studio
+- Smart Workspaces
+- Quick Capture
+- Productivity Analytics
+- Daily Review
+- Settings
+- Updates & About
+
+Diese Bereiche müssen zusammenarbeiten und Daten miteinander austauschen können.
+
+Beispiel:
+
+Eine Aufgabe wird im Task Manager erstellt, durch AutoPlan in den Kalender eingeplant, anschliessend in einer Fokussitzung bearbeitet und danach in den Statistiken berücksichtigt.
+
+Die App darf nicht aus isolierten, voneinander unabhängigen Features bestehen.
+
+---
+
+# 2. TECHNOLOGIE UND ARCHITEKTUR
+
+## Bevorzugter Technologie-Stack
+
+Verwende:
+
+- Programmiersprache: C#
+- Framework: moderne, stabile .NET-LTS-Version
+- GUI: WinUI 3
+- Windows App SDK
+- Architekturmuster: MVVM
+- MVVM Toolkit: CommunityToolkit.Mvvm
+- Dependency Injection: Microsoft.Extensions.DependencyInjection
+- Datenbank: SQLite
+- ORM: Entity Framework Core
+- Logging: Microsoft.Extensions.Logging und geeigneter Dateilogger
+- Testing: xUnit
+- Versionsverwaltung: Git
+- Remote Repository: GitHub
+- CI/CD: GitHub Actions
+- Installer: Inno Setup
+- GitHub Release API für Updates
+- Moderne Fluent-Design-Komponenten
+
+Prüfe vor Projektbeginn die aktuellen stabilen und miteinander kompatiblen Versionen aller Abhängigkeiten.
+
+Verwende keine veralteten Bibliotheken, nur weil sie in alten Tutorials verwendet werden.
+
+## Desktop-Architektur
+
+Die Anwendung soll eine echte native Windows-App sein.
+
+Kein Electron.
+
+Keine verpflichtende Cloud.
+
+Kein externer Webserver zur Ausführung der Kernfunktionen.
+
+Keine unnötige Abhängigkeit von Node.js während der Benutzung.
+
+Bevorzugt wird eine unpackaged WinUI-3-Anwendung mit Self-contained Deployment, damit die Installation einfach ist.
+
+Prüfe sorgfältig, welche Funktionen durch fehlende MSIX-Package-Identity eingeschränkt sind, und implementiere passende offiziell unterstützte Desktop-Alternativen.
+
+Wichtig ist die Unterscheidung zwischen:
+
+- der eigentlichen ausführbaren Flowstate-Anwendung
+- den dazugehörigen Laufzeitdateien
+- der Installer-EXE, welche die komplette Anwendung installiert
+
+Der Benutzer soll am Ende eine einzige Installer-Datei herunterladen können.
+
+Diese Installer-Datei darf intern mehrere benötigte Programmdateien installieren.
+
+## Architekturprinzipien
+
+- Trennung zwischen Benutzeroberfläche, Business Logic und Datenzugriff.
+- Keine komplexe Scheduling-Logik direkt in UI-Code.
+- Keine Datenbankzugriffe direkt aus View-Komponenten.
+- Asynchrone Operationen für Netzwerk, Datenbank und Dateioperationen.
+- Klare Interfaces.
+- Austauschbare Services.
+- Wiederverwendbare UI-Komponenten.
+- Sauberes Error Handling.
+- Cancellation Tokens für abbrechbare Operationen.
+- Logging statt stiller Fehler.
+- Keine unnötige technische Komplexität.
+- Keine künstliche Microservice-Architektur für eine lokale Desktop-App.
+
+---
+
+# 3. DESIGN UND BENUTZERERFAHRUNG
+
+## Designphilosophie
+
+Das Design ist eine der wichtigsten Anforderungen des gesamten Projekts.
+
+Flowstate soll aussehen wie eine erstklassige Windows-11-Anwendung aus dem Jahr 2026.
+
+Orientiere dich an hochwertigen Microsoft-Fluent-Design-Konzepten und modernen Produktivitätsanwendungen, ohne ein bestehendes Produkt direkt zu kopieren.
+
+Das Ergebnis soll minimalistisch, elegant, ruhig und professionell wirken.
+
+## Designvorgaben
+
+- Native Windows-11-Optik
+- Fluent Design
+- Mica-Hintergründe
+- Acrylic-Effekte an passenden Stellen
+- Runde Ecken
+- Angenehme Schatten
+- Konsistente Abstände
+- Moderne Typografie
+- Segoe UI Variable
+- Hochwertige Icons
+- Keine veralteten Windows-Forms-Elemente im sichtbaren UI
+- Keine Emoji-basierte Hauptnavigation
+- Weiche Animationen
+- Dezente Hover-Effekte
+- Flüssige Seitenübergänge
+- Kontextmenüs im Windows-11-Stil
+- Native Dialoge, wo sinnvoll
+- Einheitliche Benachrichtigungen
+- Gute Unterstützung für Touchscreens
+- Tastaturbedienbarkeit
+- Screenreader-Unterstützung
+- Sinnvolle Kontraste
+- Unterstützung für hohe DPI-Skalierung
+
+## Farbkonzept
+
+Default Dark Theme:
+
+- Primärer Hintergrund: sehr dunkles Anthrazit
+- Sekundäre Flächen: leicht hellere Grautöne
+- Akzentfarbe: modernes Indigo/Violett
+- Weitere Akzente: dezentes Cyan
+- Erfolgszustand: Grün
+- Warnungen: Orange
+- Fehler: Rot
+
+Die Farben müssen als wiederverwendbare Theme-Ressourcen definiert werden.
+
+Keine hartcodierten Farben über die ganze Anwendung verteilen.
+
+## Themes
+
+Implementiere:
+
+1. Dark Mode
+2. Light Mode
+3. Automatische Anpassung an Windows
+4. Auswahl der Akzentfarbe
+5. Reduzierte Animationen bei entsprechender Windows-Einstellung
+
+## Layout
+
+Die Anwendung soll eine permanente linke Navigation besitzen.
+
+Navigation:
+
+- Dashboard
+- My Tasks
+- Projects
+- Calendar
+- AutoPlan
+- Focus Studio
+- Workspaces
+- Analytics
+
+Unten in der Sidebar:
+
+- Settings
+- Help
+- About
+
+Bei kleinen Fenstergrössen soll sich die Sidebar automatisch kompakter darstellen.
+
+Die App muss auch auf einem 14-Zoll-Laptop gut funktionieren.
+
+## UI-Komponenten
+
+Erstelle konsistente wiederverwendbare Komponenten:
+
+- Navigation Sidebar
+- Page Header
+- Task Card
+- Task Editor
+- Priority Badge
+- Progress Indicator
+- Calendar Event
+- Time Block
+- Focus Timer
+- Sound Card
+- Sound Mixer Slider
+- Statistics Card
+- Empty State
+- Confirmation Dialog
+- Toast Notification
+- Search Box
+- Filter Menu
+- Settings Row
+- Keyboard Shortcut Hint
+
+## UX-Grundregeln
+
+Die häufigsten Aktionen sollen mit möglichst wenigen Klicks erreichbar sein.
+
+Wichtige Buttons benötigen eindeutige Labels.
+
+Ladezustände müssen sichtbar sein.
+
+Leere Seiten brauchen sinnvolle Empty States.
+
+Fehler müssen verständlich erklärt werden.
+
+Speichervorgänge sollen zuverlässig und möglichst direkt erfolgen.
+
+Verhindere Datenverlust beim Schliessen der App.
+
+Keine unnötigen Bestätigungsdialoge bei harmlosen Aktionen.
+
+Destruktive Aktionen müssen jedoch abgesichert sein.
+
+---
+
+# 4. DASHBOARD
+
+Das Dashboard ist die Startseite.
+
+Es soll einen klaren Überblick über den aktuellen Tag geben.
+
+## Dashboard-Widgets
+
+### Today Overview
+
+Zeigt:
+
+- Heutiges Datum
+- Anstehende Termine
+- Noch offene Aufgaben
+- Bereits erledigte Aufgaben
+- Geplante Fokuszeit
+- Tatsächlich geleistete Fokuszeit
+
+### Next Task
+
+Zeigt die nächste geplante Aufgabe.
+
+Mit:
+
+- Aufgabenname
+- Priorität
+- Geplanter Dauer
+- Beginn
+- Projekt
+- Button „Start Focus“
+
+### Quick Add
+
+Schnelleingabe für Aufgaben.
+
+### Focus Widget
+
+Kompakter Pomodoro-Timer mit Start/Pause.
+
+### Weekly Progress
+
+Visualisierung der vergangenen Woche.
+
+### Upcoming Deadlines
+
+Liste der nächsten wichtigen Fälligkeiten.
+
+### AutoPlan Widget
+
+Zeigt, ob für heute bereits ein Plan existiert.
+
+Button:
+
+„Plan My Day“
+
+### Daily Review
+
+Kurze Zusammenfassung am Ende des Tages.
+
+## Anpassbares Dashboard
+
+Der Benutzer soll:
+
+- Widgets ein- und ausblenden können
+- Widgets verschieben können
+- Layout zurücksetzen können
+- bevorzugte Startseite auswählen können
+
+Persistiere alle Dashboard-Einstellungen lokal.
+
+---
+
+# 5. TASK MANAGER
+
+Entwickle einen vollständigen Aufgabenmanager.
+
+## Eigenschaften einer Aufgabe
+
+Jede Aufgabe soll folgende Felder unterstützen:
+
+- Eindeutige ID
+- Titel
+- Beschreibung
+- Erstellungsdatum
+- Änderungsdatum
+- Status
+- Priorität
+- Projekt
+- Kategorie
+- Tags
+- Fälligkeitsdatum
+- Optionales Startdatum
+- Geschätzte Bearbeitungsdauer
+- Tatsächliche Bearbeitungsdauer
+- Aufgabenkontext
+- Energiebedarf
+- Konzentrationsbedarf
+- Wiederholungsregel
+- Unteraufgaben
+- Checkliste
+- Notizen
+- Optional Anhänge
+- Geplante Zeitblöcke
+- Zugeordnete Fokussitzungen
+- Zeitpunkt des Abschlusses
+- Optionale Abhängigkeiten von anderen Aufgaben
+
+## Prioritäten
+
+Vier Stufen:
+
+1. Urgent
+2. High
+3. Medium
+4. Low
+
+Jede Priorität besitzt eine eigene visuelle Kennzeichnung.
+
+## Status
+
+- Inbox
+- Todo
+- In Progress
+- Completed
+- On Hold
+- Cancelled
+
+## Aufgabenkontexte
+
+Eine Aufgabe soll mehrere Kontexte besitzen können.
+
+Beispiele:
+
+- PC
+- Unterwegs
+- Zuhause
+- Büro
+- Online
+- Offline
+- Smartphone
+- Überall
+
+Der Benutzer soll eigene Kontexte erstellen können.
+
+## Energiebedarf
+
+- Low
+- Medium
+- High
+
+## Bearbeitbarkeit
+
+Aufgaben können entweder:
+
+- vollständig am Stück erledigt werden müssen
+- in mehrere Sessions aufgeteilt werden dürfen
+
+Zusätzliche Einstellung:
+
+Minimale sinnvolle Session-Dauer.
+
+Beispiel:
+
+Eine 120-Minuten-Aufgabe darf in Abschnitte von mindestens 30 Minuten aufgeteilt werden.
+
+## Ansichten
+
+Implementiere:
+
+- Alle Aufgaben
+- Heute
+- Geplant
+- Diese Woche
+- Überfällig
+- Inbox
+- Abgeschlossen
+- Nach Projekt
+- Nach Priorität
+- Nach Kontext
+
+## Interaktionen
+
+- Aufgaben erstellen
+- Aufgaben bearbeiten
+- Aufgaben löschen
+- Aufgaben duplizieren
+- Aufgaben abschliessen
+- Aufgaben archivieren
+- Mehrere Aufgaben auswählen
+- Massenaktionen durchführen
+- Drag & Drop, wo sinnvoll
+- Aufgaben filtern
+- Aufgaben sortieren
+- Aufgaben suchen
+
+## Wiederkehrende Aufgaben
+
+Unterstütze:
+
+- Täglich
+- Wöchentlich
+- Monatlich
+- Jährlich
+- Benutzerdefinierte Wiederholungen
+
+Eine wiederkehrende Aufgabe soll nach Abschluss korrekt die nächste Instanz erzeugen.
+
+Keine unendlichen Duplikate.
+
+## Unteraufgaben
+
+Eine Aufgabe kann mehrere Unteraufgaben besitzen.
+
+Fortschritt kann anhand erledigter Unteraufgaben angezeigt werden.
+
+## Quick Capture
+
+Globale Tastenkombination, standardmässig:
+
+`Ctrl + Alt + Space`
+
+Die Tastenkombination muss in den Einstellungen änderbar sein.
+
+Öffne ein kleines, schnelles Overlay zum Erfassen einer Aufgabe.
+
+Beispiel:
+
+„Netzwerk lernen am Freitag für 45 Minuten“
+
+Wenn die Eingabe eindeutig ist, erkenne:
+
+- Titel
+- Datum
+- Dauer
+
+Bei Unsicherheit frage innerhalb des Overlays nach.
+
+Die natürliche Spracheingabe soll zunächst lokal und regelbasiert funktionieren.
+
+KI ist hierfür nicht zwingend erforderlich.
+
+---
+
+# 6. PROJEKTMANAGEMENT
+
+Flowstate braucht eine übersichtliche Projektverwaltung.
+
+Jedes Projekt besitzt:
+
+- Name
+- Beschreibung
+- Farbe
+- Icon
+- Erstellungsdatum
+- Optionales Zieldatum
+- Status
+- Aufgaben
+- Fortschritt
+- Optionales Zeitziel
+
+## Projektübersicht
+
+Zeige:
+
+- Projektname
+- Anzahl Aufgaben
+- Erledigte Aufgaben
+- Fortschritt
+- Nächste Deadline
+- Gesamte geschätzte Zeit
+- Tatsächlich investierte Zeit
+
+## Projektseiten
+
+Jedes Projekt besitzt eine eigene Detailansicht.
+
+Dort sollen die Aufgaben in verschiedenen Ansichten angezeigt werden können.
+
+Mindestens:
+
+- Liste
+- Gruppierung nach Status
+- Gruppierung nach Priorität
+
+Optional später:
+
+- Kanban
+- Timeline
+- Milestones
+
+---
+
+# 7. SMART CALENDAR
+
+Entwickle einen vollständigen internen Kalender.
+
+## Kalenderansichten
+
+- Tag
+- Woche
+- Monat
+- Agenda
+
+Die Wochenansicht soll für Timeboxing optimiert sein.
+
+## Kalenderinhalte
+
+Unterscheide zwischen:
+
+1. Fixen Terminen
+2. Manuell geplanten Aufgaben
+3. Automatisch geplanten Aufgaben
+4. Fokus-Sessions
+5. Pausen
+6. Optionalen Zeitreservierungen
+
+Verwende klare Farben und Symbole, um diese Typen voneinander zu unterscheiden.
+
+## Kalenderinteraktionen
+
+- Termine erstellen
+- Termine bearbeiten
+- Termine löschen
+- Zeitblöcke verschieben
+- Zeitblöcke verlängern
+- Aufgaben per Drag & Drop einplanen
+- Doppelklick auf freien Bereich zum Erstellen
+- Detailansicht bei Auswahl
+- Ansicht schnell wechseln
+- Zum heutigen Tag springen
+- Navigation zwischen Wochen und Monaten
+
+## Manuelles Timeboxing
+
+Der Benutzer muss Aufgaben direkt in Zeitfenster einplanen können.
+
+Beispiel:
+
+16:00–17:00 Python lernen.
+
+Bei Verschiebung soll die Aufgabenverknüpfung erhalten bleiben.
+
+## Kalenderregeln
+
+Fixierte Termine dürfen durch AutoPlan nicht automatisch verschoben werden.
+
+Manuelle Planung soll respektiert werden.
+
+Überlappungen müssen erkannt werden.
+
+Der Benutzer soll auf Konflikte hingewiesen werden.
+
+## Kalenderintegration
+
+Architektur für spätere Anbindungen vorbereiten:
+
+- Google Calendar
+- Outlook / Microsoft 365
+- ICS Import
+- ICS Export
+
+Externe Kalender dürfen nicht zwingend erforderlich sein.
+
+Bei aktivierter Integration:
+
+- Sichere OAuth-Anmeldung
+- Keine Speicherung von Klartextpasswörtern
+- Korrekte Zeitzonen
+- Vermeidung doppelter Termine
+- Klare Konfliktbehandlung
+- Benutzer kann Kalender auswählen
+
+Für die erste stabile lokale Version muss der interne Kalender ohne Cloud funktionieren.
+
+---
+
+# 8. AUTOPLAN – DAS HERZSTÜCK
+
+AutoPlan ist das wichtigste Alleinstellungsmerkmal von Flowstate.
+
+Implementiere einen echten intelligenten Scheduling-Algorithmus.
+
+Nicht einfach nur eine nach Priorität sortierte Aufgabenliste.
+
+## Ziel
+
+AutoPlan soll Aufgaben automatisch in passende freie Zeitfenster einplanen.
+
+Der Benutzer definiert:
+
+- Verfügbare Zeiten
+- Zu erledigende Aufgaben
+- Optionalen Arbeitskontext
+- Optionales Energielevel
+- Pausenregeln
+- Arbeitszeitgrenzen
+- Planungszeitraum
+
+AutoPlan erstellt daraus einen konkreten Zeitplan.
+
+## Planungsmodi
+
+### Plan My Day
+
+Plant den aktuellen Tag.
+
+### Plan Tomorrow
+
+Plant den nächsten Tag.
+
+### Plan My Week
+
+Verteilt Aufgaben auf die nächsten sieben Tage.
+
+### Fill Free Time
+
+Der Benutzer definiert ein bestimmtes freies Zeitfenster.
+
+Beispiel:
+
+„Ich habe von 15:00 bis 17:30 Zeit.“
+
+Flowstate schlägt passende Aufgaben vor.
+
+### Quick Session
+
+Der Benutzer gibt lediglich seine verfügbare Zeit ein.
+
+Beispiel:
+
+„Ich habe 25 Minuten.“
+
+Die App empfiehlt eine passende Aufgabe.
+
+## Algorithmus
+
+Berücksichtige mindestens:
+
+- Priorität
+- Deadline
+- Geschätzte Dauer
+- Verfügbare Zeit
+- Bereits geplante Termine
+- Fixierte Zeitblöcke
+- Arbeitskontext
+- Energiebedarf
+- Abhängigkeiten
+- Aufteilbarkeit
+- Mindestdauer einer Session
+- Pausenregeln
+- Benutzerpräferenzen
+- Bereits begonnene Aufgaben
+- Manuell fixierte Planungen
+
+## Harte Bedingungen
+
+Diese dürfen nicht verletzt werden:
+
+- Keine Überlappungen mit fixen Terminen.
+- Keine Planung ausserhalb erlaubter Arbeitszeiten.
+- Keine Aufgaben vor ihrem erlaubten Startdatum.
+- Abhängigkeiten beachten.
+- Kontextanforderungen beachten.
+- Mindestdauer beachten.
+- Nicht aufteilbare Aufgaben nicht aufteilen.
+- Fixierte Zeitblöcke nicht verschieben.
+
+## Weiche Optimierungsziele
+
+Der Algorithmus soll versuchen:
+
+- Dringende Aufgaben rechtzeitig abzuschliessen.
+- Wichtige Aufgaben bevorzugt zu berücksichtigen.
+- Freie Zeit gut zu nutzen.
+- Unnötigen Kontextwechsel zu vermeiden.
+- Pausen sinnvoll zu verteilen.
+- Verwandte Aufgaben zu gruppieren.
+- Bereits begonnene Aufgaben sinnvoll fortzusetzen.
+- Zeitpuffer einzuplanen.
+- Unnötige Fragmentierung zu verhindern.
+
+Verwende eine nachvollziehbare Scoring-Funktion oder einen anderen passenden deterministischen Optimierungsansatz.
+
+Verlasse dich nicht auf eine reine KI-Blackbox.
+
+## Planungsbeispiel
+
+Verfügbare Zeit:
+
+15:00–18:00
+
+Aufgaben:
+
+- Projekt fertigstellen – 60 Minuten – High
+- E-Mails bearbeiten – 20 Minuten – Low
+- Python lernen – 45 Minuten – Medium
+- Dokumentation – 30 Minuten – High
+- Kurze Wiederholung – 15 Minuten – Medium
+
+AutoPlan soll einen sinnvollen Zeitplan inklusive Pausen und Puffern erstellen.
+
+Der Plan muss als bearbeitbare Vorschau angezeigt werden.
+
+## Planungsvorschau
+
+Nach dem Berechnen anzeigen:
+
+- Vorgeschlagene Zeitblöcke
+- Aufgaben
+- Start- und Endzeiten
+- Pausen
+- Nicht eingeplante Aufgaben
+- Gründe für nicht eingeplante Aufgaben
+- Mögliche Konflikte
+
+Buttons:
+
+- Apply Plan
+- Regenerate
+- Customize
+- Cancel
+
+Keinen Zeitplan ohne ausdrückliche Zustimmung des Benutzers dauerhaft überschreiben.
+
+## Begründungen
+
+Für Aufgaben soll AutoPlan erklären können, weshalb sie eingeplant wurden.
+
+Beispiel:
+
+„Diese Aufgabe wurde priorisiert, da ihre Deadline morgen liegt.“
+
+Oder:
+
+„Diese Aufgabe passt zu deinem verfügbaren Zeitfenster von 30 Minuten.“
+
+## Automatische Neuplanung
+
+Wenn der Benutzer:
+
+- eine Aufgabe nicht erledigt
+- länger benötigt
+- einen neuen Termin hinzufügt
+- eine Aufgabe verschiebt
+- eine Deadline ändert
+
+soll Flowstate erkennen, dass der Plan möglicherweise nicht mehr aktuell ist.
+
+Biete dann eine Neuplanung an.
+
+Nicht ungefragt sämtliche Pläne verändern.
+
+## Planungssicherheit
+
+Implementiere:
+
+- Vorschau vor Übernahme
+- Undo der letzten Planung
+- Schutz manueller Zeitblöcke
+- Konflikterkennung
+- Kein stiller Datenverlust
+- Nachvollziehbare Entscheidungen
+
+## Algorithmus-Tests
+
+Erstelle automatisierte Tests für:
+
+- Dringende Aufgaben
+- Unterschiedliche Prioritäten
+- Zeitkonflikte
+- Unzureichende Zeit
+- Aufteilbare Aufgaben
+- Nicht aufteilbare Aufgaben
+- Kontextregeln
+- Energiebedarf
+- Abhängigkeiten
+- Wiederkehrende Aufgaben
+- Zeitzonenwechsel
+- Sommer-/Winterzeit
+- Leere Aufgabenliste
+- Vollständig belegten Kalender
+
+---
+
+# 9. FOCUS STUDIO
+
+Entwickle einen hochwertigen Pomodoro- und Deep-Work-Bereich.
+
+## Timer-Modi
+
+### Pomodoro
+
+Standard:
+
+- 25 Minuten Fokus
+- 5 Minuten Pause
+- 15 Minuten lange Pause
+- Lange Pause nach vier Fokussitzungen
+
+Alle Werte anpassbar.
+
+### Deep Work
+
+Längere Konzentrationsphasen.
+
+Beispiel:
+
+60 oder 90 Minuten.
+
+### Custom Timer
+
+Benutzerdefinierte Dauer.
+
+### Stopwatch
+
+Frei laufende Zeitmessung.
+
+### Task Focus
+
+Fokussitzung direkt einer Aufgabe zuordnen.
+
+## Timer-Bedienung
+
+- Start
+- Pause
+- Fortsetzen
+- Stop
+- Reset
+- Session verlängern
+- Session überspringen
+- Zur nächsten Pause wechseln
+
+## Design
+
+Sehr grosser, klar lesbarer Timer.
+
+Optional:
+
+- Kreisförmige Fortschrittsanzeige
+- Minimalistischer Vollbildmodus
+- Kompakte Fensteransicht
+- Floating Mini Timer
+- Always-on-Top-Modus
+
+## Technische Anforderungen
+
+Der Timer darf nicht einfach jede Sekunde einen Integer herunterzählen.
+
+Verwende eine zuverlässige Zeitberechnung anhand von Startzeit, vergangener Zeit und tatsächlicher Systemzeit.
+
+Die App soll korrekt auf Folgendes reagieren:
+
+- Fenster minimieren
+- Fenster schliessen und im Tray weiterlaufen
+- Computer sperren
+- Standby
+- Ruhezustand
+- Systemzeitänderungen
+- App-Neustart
+
+Definiere nachvollziehbare Regeln für die Behandlung von Standby und Pausen.
+
+## System Tray
+
+Ein Tray Icon mit Kontextmenü:
+
+- Open Flowstate
+- Start Focus
+- Pause
+- Resume
+- Stop
+- Next Task
+- Settings
+- Exit
+
+Die App soll bei Bedarf im Tray weiterlaufen können.
+
+## Benachrichtigungen
+
+Nach dem Ende einer Session:
+
+- Windows-Benachrichtigung
+- Optionaler Sound
+- Anzeige der nächsten Pause
+- Optional automatische nächste Session
+
+Alle Benachrichtigungen konfigurierbar.
+
+---
+
+# 10. WINDOWS-NICHT-STÖREN-INTEGRATION
+
+Beim Start einer Fokussitzung soll Flowstate versuchen, einen ablenkungsarmen Windows-Zustand herzustellen.
+
+Wunschfunktion:
+
+Windows 11 „Nicht stören“ aktivieren.
+
+Beim Ende der Session nach Möglichkeit den vorherigen Zustand wiederherstellen.
+
+## Wichtige technische Vorgaben
+
+Prüfe die offiziellen Windows-APIs und deren Berechtigungen.
+
+Verwende nur dokumentierte und zulässige Mechanismen.
+
+Gehe nicht davon aus, dass WinUI 3 automatisch eine öffentliche API zum beliebigen Aktivieren und Deaktivieren von „Nicht stören“ bereitstellt.
+
+Falls eine Integration technisch nicht allgemein verfügbar ist:
+
+- Implementiere die maximal offiziell unterstützte Funktionalität.
+- Erkenne vorhandene Windows-Fokussitzungen, soweit unterstützt.
+- Stelle einen direkten Zugang zu den Windows-Fokuseinstellungen bereit.
+- Unterstütze manuelle Aktivierung.
+- Nutze eigene ablenkungsarme UI-Modi.
+- Zeige transparent an, ob die Systemintegration aktiv oder eingeschränkt ist.
+
+Keine Registry-Hacks für undokumentierte Windows-Funktionen.
+
+Keine irreführende Anzeige „Nicht stören aktiviert“, wenn dies tatsächlich nicht passiert ist.
+
+## Weitere Fokusaktionen
+
+Optional pro Profil:
+
+- Konzentrationssound starten
+- Mini-Timer anzeigen
+- Flowstate-Benachrichtigungen reduzieren
+- Bestimmte Arbeitsprogramme öffnen
+- Fokus-Dashboard anzeigen
+
+Beim Ende nur Zustände zurücksetzen, welche Flowstate tatsächlich verändert hat.
+
+---
+
+# 11. SOUND STUDIO
+
+Integriere Konzentrationssounds.
+
+## Soundarten
+
+Mindestens:
+
+- White Noise
+- Brown Noise
+- Pink Noise
+- Regen
+- Gewitter
+- Wald
+- Fluss
+- Wind
+- Café-Ambiente
+- Lo-fi-Musik, soweit lizenzrechtlich zulässig
+- Silence
+
+## Sound Mixer
+
+Benutzer soll mehrere Sounds kombinieren können.
+
+Beispiel:
+
+- Regen: 60 %
+- Brown Noise: 35 %
+- Wald: 15 %
+
+Jede Tonspur erhält einen eigenen Lautstärkeregler.
+
+Zusätzlich:
+
+- Gesamtlautstärke
+- Play/Pause
+- Loop
+- Fade-in
+- Fade-out
+- Presets speichern
+- Presets laden
+
+## Sound-Presets
+
+Beispiele:
+
+- Deep Work
+- Rainy Evening
+- Calm Coding
+- Reading
+- Study Session
+- White Noise Only
+
+## Technische Anforderungen
+
+- Kein störendes Knacken bei Loops.
+- Keine plötzlichen extremen Lautstärkesprünge.
+- Ressourcenschonende Wiedergabe.
+- Audio stoppt zuverlässig.
+- Sounds funktionieren offline.
+- Eigene Audiodateien können importiert werden.
+- Urheberrechte beachten.
+
+Für Lo-fi dürfen keine urheberrechtlich geschützten Songs ohne entsprechende Rechte mitgeliefert werden.
+
+Lieber lizenzierte Tracks, eigene Inhalte oder Benutzerdateien unterstützen.
+
+---
+
+# 12. SMART WORKSPACES
+
+Smart Workspaces sind vordefinierte Arbeitsumgebungen.
+
+Ein Workspace bündelt Anwendungen, Projekte und Fokus-Einstellungen.
+
+## Beispiele
+
+### Coding
+
+- VS Code öffnen
+- Windows Terminal öffnen
+- Projektordner öffnen
+- Fokus-Timer auf 60 Minuten setzen
+- Brown Noise starten
+
+### Study
+
+- Lernmaterial öffnen
+- Passende Aufgaben anzeigen
+- Pomodoro starten
+- White Noise abspielen
+
+### Planning
+
+- Flowstate-Kalender öffnen
+- Offene Aufgaben anzeigen
+- Wochenplanung starten
+
+## Workspace-Eigenschaften
+
+- Name
+- Icon
+- Farbe
+- Beschreibung
+- Programme
+- Dateien
+- Ordner
+- URLs
+- Focus-Preset
+- Sound-Preset
+- Optionales Projekt
+
+## Ausführung
+
+Beim Aktivieren:
+
+- Konfigurierte Programme starten
+- Dateien öffnen
+- Webseiten im Standardbrowser öffnen
+- Fokusmodus vorbereiten
+
+## Sicherheitsanforderungen
+
+Keine unkontrollierte Ausführung beliebiger fremder Skripte.
+
+Keine Shell-Befehle aus importierten Workspace-Dateien ohne ausdrückliche Zustimmung.
+
+Zeige vor dem ersten Start an, welche Anwendungen geöffnet werden.
+
+Workspace-Aktionen müssen nachvollziehbar und kontrollierbar bleiben.
+
+---
+
+# 13. GLOBAL QUICK CAPTURE
+
+Implementiere ein kleines Eingabefenster, das sich unabhängig vom Hauptfenster öffnen lässt.
+
+Standard-Shortcut:
+
+`Ctrl + Alt + Space`
+
+Der Benutzer kann den Shortcut ändern.
+
+Das Overlay soll extrem schnell sein.
+
+Features:
+
+- Aufgabe erstellen
+- Dauer hinzufügen
+- Deadline hinzufügen
+- Priorität auswählen
+- Projekt auswählen
+- Letzte Eingabe wiederherstellen
+
+Das Overlay soll nach erfolgreicher Speicherung optional automatisch geschlossen werden.
+
+Wenn der Shortcut bereits von einer anderen Anwendung belegt ist, zeige einen verständlichen Fehler und ermögliche das Ändern der Kombination.
+
+---
+
+# 14. PRODUCTIVITY ANALYTICS
+
+Erstelle eine übersichtliche Statistikseite.
+
+## Statistiken
+
+- Gesamte Fokuszeit
+- Fokuszeit heute
+- Fokuszeit diese Woche
+- Fokuszeit diesen Monat
+- Anzahl abgeschlossener Aufgaben
+- Anzahl erstellter Aufgaben
+- Aufgaben je Projekt
+- Zeit pro Projekt
+- Durchschnittliche Session-Dauer
+- Geschätzte vs. tatsächliche Dauer
+- Erledigte Aufgaben nach Priorität
+- Entwicklung über verschiedene Zeiträume
+
+## Diagramme
+
+- Tagesdiagramm
+- Wochendiagramm
+- Monatsdiagramm
+- Fokuszeit nach Projekt
+- Aufgabenfortschritt
+- Schätzgenauigkeit
+
+## Ansichten
+
+Zeitraum auswählen:
+
+- Heute
+- Letzte sieben Tage
+- Letzte 30 Tage
+- Benutzerdefinierter Zeitraum
+
+## Wichtig
+
+Statistiken sollen informativ sein, nicht unangenehm oder zwanghaft.
+
+Keine künstlichen Belohnungsmechanismen, die den Benutzer zu endloser Nutzung drängen.
+
+Pausen und Erholung dürfen nicht als Produktivitätsversagen dargestellt werden.
+
+Benutzer soll die Statistiken auch vollständig deaktivieren können.
+
+---
+
+# 15. DAILY REVIEW
+
+Erstelle eine optionale Tageszusammenfassung.
+
+Zeige:
+
+- Erledigte Aufgaben
+- Unerledigte Aufgaben
+- Geleistete Fokuszeit
+- Geplante vs. tatsächliche Dauer
+- Projektfortschritt
+- Aufgaben für morgen
+
+Buttons:
+
+- Plan Tomorrow
+- Move Unfinished Tasks
+- Open Calendar
+- Finish Review
+
+Die Tageszusammenfassung soll nicht automatisch ungefragt Aufgaben verschieben.
+
+---
+
+# 16. EINSTELLUNGEN
+
+Erstelle eine hochwertige Settings-Seite.
+
+Kategorien:
+
+### General
+
+- Sprache
+- Theme
+- Akzentfarbe
+- Startseite
+- Beim Windows-Start starten
+- Im System Tray minimieren
+- Verhalten beim Schliessen
+- Animationen
+
+### Tasks
+
+- Standardpriorität
+- Standarddauer
+- Standardprojekt
+- Standardkontext
+- Einstellungen zu wiederkehrenden Aufgaben
+
+### Calendar
+
+- Erster Wochentag
+- 12-/24-Stundenformat
+- Arbeitszeiten
+- Standardansicht
+- Zeitzone
+
+### AutoPlan
+
+- Pausenlänge
+- Zeitpuffer
+- Standardarbeitszeiten
+- Automatische Planungsvorschläge
+- Prioritätsgewichtung
+- Mindestdauer von Zeitblöcken
+
+### Focus
+
+- Pomodoro-Dauer
+- Kurze Pause
+- Lange Pause
+- Anzahl Sessions
+- Automatisches Starten
+- Mini-Timer
+- Windows-Integration
+
+### Sounds
+
+- Standardpreset
+- Lautstärke
+- Automatische Wiedergabe
+- Fade-in/Fade-out
+
+### Notifications
+
+- Erinnerungen
+- Fälligkeitswarnungen
+- Fokussitzungsende
+- Update-Hinweise
+
+### Updates
+
+- Automatisch nach Updates suchen
+- Update-Kanal
+- Nach Updates suchen
+- Aktuelle Version
+- Letzte Update-Prüfung
+- Release Notes öffnen
+
+### Data & Privacy
+
+- Datenbankpfad anzeigen
+- Backup erstellen
+- Backup wiederherstellen
+- Daten exportieren
+- Daten importieren
+- Daten vollständig löschen
+- Datenschutzinformationen
+
+### About
+
+- App-Name
+- Version
+- Build-Informationen
+- GitHub-Repository
+- Lizenz
+- Verwendete Open-Source-Bibliotheken
+- Update-Status
+
+---
+
+# 17. DATENBANK
+
+Verwende SQLite mit Entity Framework Core.
+
+## Datenmodell
+
+Erstelle geeignete Entitäten für:
+
+- Tasks
+- Projects
+- Tags
+- TaskTags
+- TaskContexts
+- TaskDependencies
+- Subtasks
+- ChecklistItems
+- CalendarEvents
+- ScheduledBlocks
+- FocusSessions
+- FocusPresets
+- SoundPresets
+- SoundTracks
+- Workspaces
+- WorkspaceActions
+- UserSettings
+- AutoPlanSettings
+- DailyReviews
+- ActivityHistory
+
+Plane Beziehungen, Fremdschlüssel und Indizes sorgfältig.
+
+## Datenregeln
+
+- Stabile eindeutige IDs
+- Korrekte Foreign Keys
+- Transaktionen bei mehrstufigen Operationen
+- Validierung
+- Keine stillen Datenverluste
+- Sichere Datenbankmigrationen
+- Keine SQLite-Datei im schreibgeschützten Installationsordner
+
+## Speicherort
+
+Benutzerdaten müssen pro Windows-Benutzer getrennt gespeichert werden.
+
+Bevorzugt:
+
+`%LOCALAPPDATA%\Flowstate\`
+
+Darin beispielsweise:
+
+- Database
+- Settings
+- Logs
+- Backups
+- Cache
+
+Auch bei systemweiter Installation dürfen die individuellen Aufgaben verschiedener Windows-Benutzer nicht automatisch vermischt werden.
+
+## Backups
+
+Implementiere:
+
+- Manuelles Backup
+- Automatisches optionales Backup
+- Wiederherstellung
+- Export
+- Import
+
+Vor Datenbankmigrationen soll nach Möglichkeit eine Sicherung angelegt werden.
+
+---
+
+# 18. WINDOWS-INTEGRATION
+
+Die App soll sich wie eine richtige Windows-11-Anwendung verhalten.
+
+## Anforderungen
+
+- Startmenü-Eintrag
+- Taskleistenintegration
+- System Tray
+- Windows Notifications
+- Global Hotkeys
+- Datei- und Ordnerdialoge
+- Öffnen von URLs
+- Optionaler Autostart
+- Windows Theme Detection
+- DPI-Skalierung
+- Mehrere Monitore
+- Fenstergrösse und Position merken
+
+## Fensterverhalten
+
+- Minimieren
+- Maximieren
+- Wiederherstellen
+- Schliessen
+- Optional in Tray minimieren
+- Fensterposition speichern
+- Optional Always-on-Top für den Mini-Timer
+
+Vermeide unnötige Hintergrundprozesse.
+
+Die Anwendung darf nicht heimlich dauerhaft im Hintergrund bleiben, wenn der Benutzer sie ausdrücklich beendet.
+
+---
+
+# 19. WINDOWS-INSTALLER – ABSOLUTE PFLICHT
+
+Dieser Bereich ist besonders wichtig.
+
+Erstelle einen vollständigen professionellen Windows-Installer mit **Inno Setup**.
+
+Der Benutzer soll eine einzige `.exe` herunterladen und starten können.
+
+Bevorzugter Dateiname:
+
+`Flowstate-Setup-1.0.0-win-x64.exe`
+
+Die tatsächliche Versionsnummer muss automatisch aus der Release-Version übernommen werden.
+
+## 19.1 Installationsmodus auswählen
+
+Beim Installieren muss es zwei Optionen geben.
+
+### Option 1: Nur für mich installieren
+
+Anzeigetext:
+
+**Nur für mich installieren (empfohlen)**
+
+Beschreibung:
+
+„Flowstate wird nur für dein Windows-Benutzerkonto installiert. Es sind keine Administratorrechte erforderlich.“
+
+Diese Option muss standardmässig ausgewählt sein.
+
+Anforderungen:
+
+- Keine UAC-Abfrage
+- Keine Administratorrechte
+- Installation im Benutzerprofil
+- Startmenü-Eintrag nur für aktuellen Benutzer
+- Uninstaller nur für diesen Benutzer
+- Keine systemweiten Registry-Einträge
+- Keine Dateien in geschützten Systemordnern
+- Funktioniert mit einem normalen Standardbenutzerkonto
+
+Bevorzugter Installationspfad:
+
+`%LOCALAPPDATA%\Programs\Flowstate`
+
+### Option 2: Für alle Benutzer installieren
+
+Anzeigetext:
+
+**Für alle Benutzer dieses Computers installieren**
+
+Beschreibung:
+
+„Flowstate wird systemweit installiert und ist für alle Windows-Benutzer verfügbar. Administratorrechte sind erforderlich.“
+
+Anforderungen:
+
+- Windows-UAC-Abfrage
+- Installation in Program Files
+- Startmenü-Eintrag für alle Benutzer
+- Systemweiter Uninstaller
+- Korrekte Windows-Berechtigungen
+- Benutzerdaten trotzdem pro Windows-Benutzer getrennt
+
+Bevorzugter Installationspfad:
+
+`%ProgramFiles%\Flowstate`
+
+## 19.2 Inno-Setup-Konfiguration
+
+Nutze die offiziell unterstützten Installationsmodi von Inno Setup.
+
+Orientiere dich insbesondere an:
+
+- `PrivilegesRequired=lowest`
+- `PrivilegesRequiredOverridesAllowed=dialog`
+- `DefaultDirName={autopf}\Flowstate`
+- Automatischen Benutzer-/Systempfad-Konstanten
+- `HKA` für installationsmodusabhängige Registry-Einträge
+
+Prüfe die Syntax anhand der aktuellen Inno-Setup-Dokumentation.
+
+Verwende nicht einfach einen Installer, der standardmässig Administratorrechte anfordert.
+
+Der Benutzerinstallationsmodus ohne UAC ist eine harte Akzeptanzbedingung.
+
+## 19.3 Installationsoberfläche
+
+Der Installer soll modern und professionell wirken.
+
+Mit:
+
+- Flowstate-Logo
+- App-Name
+- Versionsnummer
+- Installationsmodus
+- Installationspfad
+- Optionaler Desktopverknüpfung
+- Optionaler Autostart-Einstellung
+- Installationsfortschritt
+- Erfolgsseite
+- Checkbox „Flowstate jetzt starten“
+
+Nutze die Möglichkeiten von Inno Setup für ein konsistentes Erscheinungsbild.
+
+## 19.4 Deinstallation
+
+Erstelle einen vollständigen Uninstaller.
+
+Er muss:
+
+- Über Windows-Einstellungen erreichbar sein.
+- Die Programmdateien entfernen.
+- Startmenüverknüpfungen entfernen.
+- Desktopverknüpfungen entfernen, falls angelegt.
+- Autostart-Einträge entfernen.
+- Zugehörige Registry-Einträge entfernen.
+- Den laufenden Prozess korrekt behandeln.
+
+Benutzerdaten bleiben standardmässig erhalten.
+
+Eine separate, ausdrücklich bestätigte Option darf die Benutzerdaten löschen.
+
+Bei systemweiter Installation dürfen Daten anderer Windows-Benutzer nicht ungefragt gelöscht werden.
+
+## 19.5 Upgrade einer bestehenden Installation
+
+Der Installer muss erkennen, ob Flowstate bereits installiert ist.
+
+Beachte:
+
+- Vorhandene Version erkennen
+- Installationsmodus korrekt übernehmen
+- Daten erhalten
+- Einstellungen erhalten
+- Datenbank gegebenenfalls migrieren
+- Laufende App sauber beenden
+- Keine unnötigen Duplikate im Startmenü
+- Keine mehrfachen Deinstallations-Einträge
+
+Ein Benutzerinstallations-Update darf keine Administratorrechte benötigen.
+
+Ein systemweites Update darf die erforderliche UAC-Bestätigung verlangen.
+
+## 19.6 Installer-Tests
+
+Teste mindestens:
+
+1. Installation als Standardbenutzer ohne Adminrechte.
+2. Keine UAC-Abfrage bei „Nur für mich“.
+3. Systemweite Installation mit UAC.
+4. App startet nach der Installation.
+5. Startmenüverknüpfung funktioniert.
+6. Desktopverknüpfung funktioniert.
+7. Datenbank wird korrekt angelegt.
+8. Upgrade bewahrt Daten.
+9. Deinstallation funktioniert.
+10. Benutzerdateien bleiben standardmässig erhalten.
+11. Fehlerhafte Installation wird sauber behandelt.
+12. Mehrere Windows-Benutzer können ihre eigenen Daten verwenden.
+
+Wenn einzelne Tests nicht automatisiert durchgeführt werden können, dokumentiere sie als manuelle Tests. Behaupte keine erfolgreiche Durchführung ohne Nachweis.
+
+---
+
+# 20. AUTOMATISCHES UPDATE-SYSTEM ÜBER GITHUB
+
+Flowstate muss ein eigenes Update-System besitzen.
+
+**Update-Quelle: GitHub Releases.**
+
+## 20.1 Automatische Update-Prüfung
+
+Beim App-Start wird im Hintergrund geprüft, ob eine neue stabile Version verfügbar ist.
+
+Beachte:
+
+- Kein Blockieren des App-Starts
+- Kein unnötig häufiger Request
+- Zwischenspeichern der letzten Prüfung
+- Standardmässig maximal eine Prüfung pro 24 Stunden
+- Manuelle Prüfung jederzeit möglich
+- Offlinebetrieb darf nicht beeinträchtigt werden
+
+Nutze die offizielle GitHub Releases API.
+
+## 20.2 Versionsvergleich
+
+Vergleiche die lokal installierte Version mit der neuesten verfügbaren Version.
+
+Verwende Semantic Versioning.
+
+Beispiel:
+
+Installiert:
+
+`1.0.0`
+
+Verfügbar:
+
+`1.1.0`
+
+Die App erkennt korrekt, dass ein Update vorhanden ist.
+
+## 20.3 Update-Oberfläche
+
+Bei einem verfügbaren Update erscheint eine moderne, nicht aufdringliche Benachrichtigung.
+
+Beispiel:
+
+**Flowstate 1.1.0 ist verfügbar**
+
+„Ein neues Update bringt Verbesserungen und Fehlerbehebungen.“
+
+Buttons:
+
+- Update installieren
+- Release Notes
+- Später
+
+Der Benutzer soll Updates auch in Settings → Updates verwalten können.
+
+## 20.4 Update-Installation
+
+Gewünschter Ablauf:
+
+1. Neue GitHub-Version erkennen.
+2. Passenden Installer für die Architektur ermitteln.
+3. Versionsinformationen anzeigen.
+4. Benutzer stimmt dem Update zu.
+5. Installer herunterladen.
+6. Integrität und Vertrauenswürdigkeit prüfen.
+7. Flowstate sauber beenden.
+8. Installer starten.
+9. Vorhandene Installation aktualisieren.
+10. Benutzerdaten erhalten.
+11. Flowstate nach Möglichkeit wieder öffnen.
+
+Der Update-Mechanismus muss den ursprünglichen Installationsmodus berücksichtigen.
+
+### Benutzerinstallation
+
+- Ohne Adminrechte
+- Kein unnötiger UAC-Dialog
+- Bestehenden Benutzerinstallationspfad übernehmen
+
+### Systeminstallation
+
+- Systemweiten Installationsmodus erhalten
+- UAC bei Bedarf korrekt anfordern
+- Keine unberechtigten Schreibzugriffe in Program Files
+
+## 20.5 Sicherheit
+
+Ein Update-Mechanismus führt heruntergeladenen Code aus und ist daher sicherheitskritisch.
+
+Implementiere mindestens:
+
+- HTTPS
+- Offizielle GitHub-Endpunkte
+- Prüfung der erwarteten Repository-Herkunft
+- Korrekte Release-Asset-Auswahl
+- SHA-256-Integritätsprüfung
+- Schutz vor manipulierten Download-URLs
+- Keine beliebige Ausführung von durch Dritte übermittelten Dateipfaden
+- Sichere temporäre Downloadpfade
+- Prüfung des Download-Ergebnisses
+- Sinnvolle Fehlermeldungen
+
+Eine Prüfsumme allein stellt keine kryptografische Authentizität sicher, wenn sowohl Datei als auch Prüfsumme aus einer kompromittierten Quelle stammen.
+
+Unterstütze deshalb digitale Signaturen, sobald ein gültiges Code-Signing-Zertifikat verfügbar ist.
+
+Falls kein Zertifikat vorhanden ist, kennzeichne den Installer korrekt als unsigniert.
+
+Erfinde keine Signatur und umgehe keine Windows-Sicherheitswarnungen.
+
+## 20.6 Update-Kanäle
+
+Mindestens:
+
+- Stable
+
+Später optional:
+
+- Beta
+- Nightly
+
+Beta- und Prerelease-Versionen dürfen nicht ungefragt an Stable-Nutzer verteilt werden.
+
+## 20.7 Offline-Verhalten
+
+Bei fehlender Internetverbindung:
+
+- Keine Abstürze
+- Keine blockierte Oberfläche
+- Keine wiederholten störenden Meldungen
+- App funktioniert normal weiter
+
+## 20.8 Private und öffentliche GitHub-Repositories
+
+Beachte:
+
+Öffentlich verteilte Installer sollen ihre Updates ohne eingebettetes GitHub-Token beziehen können.
+
+Ein privates Repository ist nicht automatisch als öffentlicher Update-Kanal geeignet.
+
+Niemals persönliche GitHub-Tokens in die veröffentlichte App einbauen.
+
+Die Repository-Sichtbarkeit darf nicht ohne Zustimmung geändert werden.
+
+Wenn eine öffentliche Veröffentlichung erforderlich ist, aber noch nicht genehmigt wurde, fordere diese Zustimmung an.
+
+---
+
+# 21. GITHUB – VOLLSTÄNDIGE INTEGRATION
+
+Der komplette Quellcode muss auf GitHub liegen.
+
+Repository-Name:
+
+`flowstate`
+
+Nutze das authentifizierte GitHub-Konto des Entwicklers.
+
+## 21.1 Repository einrichten
+
+Falls noch kein Repository existiert:
+
+- Repository erstellen
+- Git initialisieren
+- Passende `.gitignore` erstellen
+- README erstellen
+- Lizenzentscheidung dokumentieren
+- Projektstruktur hochladen
+- Ersten Commit erstellen
+- Remote konfigurieren
+
+Wenn bereits ein Repository existiert, nutze das bestehende Repository nach Prüfung des Zustands.
+
+Überschreibe keine fremden Änderungen.
+
+## 21.2 Git-Workflow
+
+Verwende:
+
+- `main` als stabilen Hauptbranch
+- Feature-Branches für grössere Änderungen
+- Aussagekräftige Commit-Messages
+- Pull Requests, wenn sinnvoll
+- Automatische Tests vor Merge
+
+Commit-Messages sollen möglichst dem Conventional-Commits-Standard folgen.
+
+Beispiele:
+
+- `feat: add task management`
+- `feat: implement smart scheduling`
+- `feat: add focus timer`
+- `fix: correct timer after system sleep`
+- `feat: implement GitHub auto updater`
+- `build: configure Windows installer`
+- `docs: update installation guide`
+
+## 21.3 Automatisches Pushen
+
+Nach jeder erfolgreich abgeschlossenen sinnvollen Arbeitseinheit:
+
+1. Änderungen prüfen.
+2. Tests ausführen.
+3. Passende Dateien stagen.
+4. Commit erstellen.
+5. Nach GitHub pushen.
+6. Push-Ergebnis überprüfen.
+
+Keine Secrets committen.
+
+Keine generierten Build-Verzeichnisse unnötig hochladen.
+
+Keine kaputten Zwischenstände als stabile Releases kennzeichnen.
+
+Wenn GitHub nicht erreichbar ist, lokal committen und den fehlgeschlagenen Push melden.
+
+## 21.4 GitHub Actions
+
+Erstelle Workflows für:
+
+- Build
+- Tests
+- Codequalität
+- Installer-Erstellung
+- Release-Veröffentlichung
+
+### CI-Workflow
+
+Bei Pull Requests und Pushes:
+
+1. Repository auschecken.
+2. .NET SDK installieren.
+3. Abhängigkeiten wiederherstellen.
+4. Solution bauen.
+5. Unit-Tests durchführen.
+6. Integrationsprüfungen ausführen.
+7. Ergebnisse ausgeben.
+
+Verwende Windows-Runner für Windows-spezifische Builds.
+
+## 21.5 Release-Workflow
+
+Bei einem gültigen Versionstag:
+
+Beispiel:
+
+`v1.0.0`
+
+Automatisch:
+
+1. Version validieren.
+2. Release-Build erstellen.
+3. Tests durchführen.
+4. Self-contained App veröffentlichen.
+5. Inno Setup Installer bauen.
+6. SHA-256-Prüfsummen berechnen.
+7. GitHub Release erstellen.
+8. Installer als Release Asset hochladen.
+9. Release Notes hinzufügen.
+10. Installationsartefakte überprüfen.
+
+## 21.6 Release Assets
+
+Beispiel:
+
+- `Flowstate-Setup-1.0.0-win-x64.exe`
+- `Flowstate-1.0.0-win-x64.zip`
+- `SHA256SUMS.txt`
+
+Optional bei vollständig getesteter Unterstützung:
+
+- ARM64-Installer
+- ARM64-Portable-ZIP
+
+x64 ist Pflicht.
+
+ARM64 nur veröffentlichen, wenn die Architektur tatsächlich korrekt gebaut und getestet wurde.
+
+## 21.7 Release Notes
+
+Jedes Release soll eine klare Beschreibung erhalten.
+
+Beispiel:
+
+### Flowstate v1.0.0
+
+**Features**
+- Task Manager
+- Smart Calendar
+- AutoPlan
+- Focus Studio
+- Sound Studio
+- GitHub Updates
+
+**Improvements**
+- Performance-Verbesserungen
+- Windows-11-Design
+
+**Bug Fixes**
+- Behobene Fehler
+
+**Installation**
+- Installer herunterladen
+- EXE starten
+- Installationsmodus auswählen
+- Flowstate öffnen
+
+## 21.8 Release-Regeln
+
+Ein GitHub Release darf nicht einfach nur einen Quellcode-ZIP enthalten.
+
+Der Windows-Installer muss tatsächlich als Asset hochgeladen werden.
+
+Der Release-Workflow muss fehlschlagen, wenn der Installer nicht erfolgreich gebaut wurde.
+
+Keine falschen Erfolgsmeldungen.
+
+Keine ungetesteten Builds als Stable veröffentlichen.
+
+---
+
+# 22. APP-IDENTITÄT UND BRANDING
+
+App-Name:
+
+**Flowstate**
+
+Slogan:
+
+**Your time. Your focus. Your flow.**
+
+## Icon
+
+Erstelle ein eigenes modernes App-Icon.
+
+Designrichtung:
+
+- Minimalistisch
+- Gut erkennbar
+- Indigo/Violett
+- Optional Cyan-Akzent
+- Abstrakte Kombination aus Flow, Zeit oder Fokus
+- Keine überladenen Details
+
+Benötigte Varianten:
+
+- Windows-Anwendungsicon
+- Installer-Icon
+- Taskleisten-Icon
+- System-Tray-Icon
+- About-Seite
+- GitHub-README
+
+Erstelle die erforderlichen technischen Icon-Dateien aus einer konsistenten visuellen Quelle.
+
+## Sprache
+
+Die Oberfläche muss zunächst vollständig auf Deutsch funktionieren.
+
+Bereite die Architektur für Lokalisierung vor.
+
+Später:
+
+- Englisch
+- Weitere Sprachen
+
+Keine überall hartcodierten UI-Texte.
+
+Verwende zentral verwaltete Sprachressourcen.
+
+---
+
+# 23. PERFORMANCE
+
+Flowstate soll möglichst schnell und ressourcenschonend sein.
+
+## Ziele
+
+- Schneller App-Start
+- Flüssige Animationen
+- Keine UI-Freezes
+- Keine unnötige CPU-Auslastung im Hintergrund
+- Geringe Speicherauslastung
+- Effiziente Datenbankabfragen
+- Kein dauerhaftes unnötiges Polling
+- Effizienter Timer
+- Effiziente Audioverarbeitung
+- Keine Speicherlecks
+
+## Optimierungen
+
+- Async/Await
+- Virtualisierte Listen
+- Lazy Loading, wo sinnvoll
+- Datenbankindizes
+- Ressourcen korrekt freigeben
+- Hintergrundarbeiten begrenzen
+- UI-Thread nicht blockieren
+
+Führe reale Performance-Messungen durch und dokumentiere sie.
+
+Erfinde keine Benchmarkwerte.
+
+---
+
+# 24. SICHERHEIT UND DATENSCHUTZ
+
+Die Anwendung verarbeitet persönliche Aufgaben und Kalenderdaten.
+
+Privacy by Design ist Pflicht.
+
+## Vorgaben
+
+- Lokale Datenspeicherung als Standard
+- Keine Registrierung erforderlich
+- Keine unnötige Telemetrie
+- Keine Übertragung von Aufgabeninhalten ohne Zustimmung
+- Keine eingebetteten API-Secrets
+- Sichere Speicherung von Authentifizierungsdaten
+- Windows Credential Manager oder geeignete geschützte Speicherung für Zugangsdaten
+- Keine Klartextpasswörter
+- Eingaben validieren
+- Importierte Dateien sicher behandeln
+- Externe URLs validieren
+- Keine unkontrollierte Prozessausführung
+- Datenbankzugriff absichern
+- Logging ohne sensible Aufgabeninhalte, soweit nicht erforderlich
+
+## Fehlerberichte
+
+Biete optional lokale Fehlerprotokolle.
+
+Eine zukünftige automatische Fehlerübertragung darf nur nach informierter Zustimmung erfolgen.
+
+---
+
+# 25. PROJEKTSTRUKTUR
+
+Verwende eine sauber organisierte Solution.
+
+Beispiel:
+
+```text
+flowstate/
+├── .github/
+│   ├── workflows/
+│   │   ├── ci.yml
+│   │   └── release.yml
+│   └── ISSUE_TEMPLATE/
+├── src/
+│   ├── Flowstate.App/
+│   │   ├── App.xaml
+│   │   ├── MainWindow.xaml
+│   │   ├── Assets/
+│   │   ├── Views/
+│   │   ├── ViewModels/
+│   │   ├── Controls/
+│   │   ├── Styles/
+│   │   ├── Themes/
+│   │   ├── Localization/
+│   │   └── Converters/
+│   ├── Flowstate.Core/
+│   │   ├── Models/
+│   │   ├── Interfaces/
+│   │   ├── Scheduling/
+│   │   ├── Validation/
+│   │   └── Utilities/
+│   ├── Flowstate.Infrastructure/
+│   │   ├── Data/
+│   │   ├── Repositories/
+│   │   ├── Services/
+│   │   ├── Audio/
+│   │   ├── Windows/
+│   │   └── Updates/
+│   └── Flowstate.Updater/
+├── tests/
+│   ├── Flowstate.Core.Tests/
+│   ├── Flowstate.Infrastructure.Tests/
+│   └── Flowstate.IntegrationTests/
+├── installer/
+│   ├── Flowstate.iss
+│   └── assets/
+├── scripts/
+│   ├── build.ps1
+│   ├── publish.ps1
+│   └── release.ps1
+├── docs/
+│   ├── architecture.md
+│   ├── development.md
+│   ├── installation.md
+│   ├── updater.md
+│   └── testing.md
+├── .editorconfig
+├── .gitignore
+├── README.md
+├── CHANGELOG.md
+├── LICENSE
+└── Flowstate.sln
+```
+
+Die Struktur ist ein Vorschlag.
+
+Passe sie an, wenn eine bessere Organisation technisch sinnvoll ist.
+
+Wichtig sind klare Verantwortlichkeiten und eine wartbare Architektur.
+
+---
+
+# 26. TESTING UND QUALITÄTSSICHERUNG
+
+Schreibe echte automatisierte Tests.
+
+## Unit Tests
+
+Mindestens für:
+
+- Aufgabenvalidierung
+- Prioritätslogik
+- Aufgabenstatus
+- Wiederholungsregeln
+- Timerberechnung
+- Scheduling-Algorithmus
+- Zeitfensterberechnung
+- Versionsvergleich
+- Update-Manifest-Verarbeitung
+
+## Integration Tests
+
+Mindestens für:
+
+- SQLite
+- Datenbankmigrationen
+- Aufgaben erstellen und bearbeiten
+- Kalenderpersistenz
+- Fokusprotokollierung
+- Backup/Wiederherstellung
+- Import/Export
+
+## UI Tests
+
+Wo technisch möglich:
+
+- Navigation
+- Task Editor
+- Timer
+- Kalender
+- Settings
+- Update-Dialog
+
+## Manuelle Tests
+
+Dokumentiere Tests, die echte Windows-11-Interaktion benötigen.
+
+Insbesondere:
+
+- System Tray
+- Global Hotkeys
+- Windows-Benachrichtigungen
+- Installation ohne Adminrechte
+- Systemweite Installation
+- UAC
+- Deinstallation
+- Automatische Updates
+- Multi-Monitor
+- DPI-Skalierung
+- Light-/Dark-Mode
+
+## Qualitätsbedingungen
+
+Vor einem Stable Release:
+
+- Keine bekannten kritischen Fehler
+- Build erfolgreich
+- Automatisierte Tests erfolgreich
+- Keine kaputten Navigationselemente
+- Keine Dummy-Features
+- Installer vorhanden
+- Installation geprüft
+- Update-Pfad geprüft
+- Dokumentation vollständig
+
+---
+
+# 27. ENTWICKLUNGSPHASEN
+
+Arbeite in einer sinnvollen Reihenfolge.
+
+## Phase 1 – Foundation
+
+- Repository initialisieren
+- Solution erstellen
+- Architektur definieren
+- WinUI 3 einrichten
+- Dependency Injection
+- Logging
+- SQLite
+- Theme-System
+- Navigation
+- GitHub Actions
+- Erste ausführbare Anwendung
+
+Danach:
+
+Commit und Push.
+
+## Phase 2 – Task Manager
+
+- Datenmodell
+- CRUD
+- Projekte
+- Prioritäten
+- Deadlines
+- Kontexte
+- Unteraufgaben
+- Wiederholungen
+- Filter
+- Suche
+
+Danach:
+
+Tests, Commit und Push.
+
+## Phase 3 – Focus Studio
+
+- Pomodoro
+- Deep Work
+- Custom Timer
+- Tray
+- Benachrichtigungen
+- Aufgabenzuordnung
+- Fokushistorie
+- Sound Studio
+
+Danach:
+
+Tests, Commit und Push.
+
+## Phase 4 – Calendar
+
+- Tagesansicht
+- Wochenansicht
+- Monatsansicht
+- Termine
+- Timeboxing
+- Drag & Drop
+- Konflikterkennung
+
+Danach:
+
+Tests, Commit und Push.
+
+## Phase 5 – AutoPlan
+
+- Scheduling Engine
+- Zeitfenster
+- Prioritätsbewertung
+- Kontextlogik
+- Pausen
+- Aufgabenaufteilung
+- Planvorschau
+- Neuplanung
+- Undo
+
+Danach:
+
+Ausführliche Tests, Commit und Push.
+
+## Phase 6 – Smart Workspaces
+
+- Workspace-Verwaltung
+- Programmstarts
+- Quick Capture
+- Globale Shortcuts
+- Windows-Integration
+
+Danach:
+
+Tests, Commit und Push.
+
+## Phase 7 – Analytics
+
+- Fokusstatistiken
+- Task-Statistiken
+- Diagramme
+- Daily Review
+- Dashboard-Widgets
+
+Danach:
+
+Tests, Commit und Push.
+
+## Phase 8 – Installer & Updater
+
+- Self-contained Build
+- Inno Setup
+- Per-User-Installation
+- Per-Machine-Installation
+- Deinstallation
+- GitHub Updater
+- Versionsvergleich
+- Update-Download
+- Update-Installation
+- GitHub Release Pipeline
+
+Danach:
+
+Installation und Updates testen, Commit und Push.
+
+## Phase 9 – Final Polish
+
+- UI optimieren
+- Performance prüfen
+- Bugs beheben
+- Fehlermeldungen verbessern
+- Dokumentation vervollständigen
+- Barrierefreiheit prüfen
+- Installer validieren
+
+Danach:
+
+Finalen Commit und Push durchführen.
+
+## Phase 10 – Stable Release
+
+Erst nach erfolgreicher Qualitätsprüfung:
+
+- Versionsnummer festlegen
+- Git Tag erstellen
+- GitHub Release auslösen
+- Installer bauen
+- Installer als Asset hochladen
+- Release Notes erstellen
+- Release-Artefakte verifizieren
+- Installationsanleitung bereitstellen
+
+Veröffentliche Version `v1.0.0` nur dann als Stable, wenn sämtliche für Version 1.0 verbindlichen Kernanforderungen tatsächlich erfüllt sind.
+
+Falls noch nicht alle Anforderungen erfüllt sind, veröffentliche einen korrekt gekennzeichneten Entwicklungsstand, beispielsweise `v0.9.0-beta`, und arbeite weiter.
+
+---
+
+# 28. WICHTIGE REGELN FÜR AUTONOMES VIBE CODING
+
+Befolge während der gesamten Entwicklung diese Regeln.
+
+## Regel 1: Keine Fake-Features
+
+Ein Button darf nicht nur schön aussehen.
+
+Er muss die vorgesehene Funktion ausführen.
+
+## Regel 2: Kein Pseudocode als fertige Implementierung
+
+Schreibe echten, funktionierenden Code.
+
+## Regel 3: Keine unnötigen Rückfragen
+
+Treffe bei gewöhnlichen technischen Entscheidungen selbst sinnvolle Entscheidungen.
+
+Frage nur, wenn Berechtigungen, externe Zugänge, Veröffentlichung, Sicherheitsfragen oder wirklich entscheidende Produktentscheidungen betroffen sind.
+
+## Regel 4: GitHub konsequent verwenden
+
+Nach jedem abgeschlossenen Entwicklungsschritt committen und pushen.
+
+## Regel 5: Tests tatsächlich ausführen
+
+Nicht nur Tests schreiben, sondern ausführen und Fehler korrigieren.
+
+## Regel 6: Keine ungetesteten Stable Releases
+
+Eine erfolgreiche Kompilierung allein genügt nicht.
+
+## Regel 7: Probleme direkt beheben
+
+Wenn ein Fehler auftritt:
+
+1. Ursache untersuchen.
+2. Passende Lösung entwickeln.
+3. Änderung implementieren.
+4. Tests erneut ausführen.
+5. Ergebnis dokumentieren.
+
+## Regel 8: Keine Sicherheitsmechanismen umgehen
+
+Keine UAC-Umgehung.
+
+Keine Zertifikatsfälschung.
+
+Keine deaktivierten Sicherheitssysteme als Voraussetzung.
+
+## Regel 9: Abhängigkeiten sorgfältig auswählen
+
+Verwende stabile und gepflegte Bibliotheken.
+
+Vermeide unnötige Pakete.
+
+## Regel 10: Benutzerfreundlichkeit priorisieren
+
+Eine gut funktionierende einfache Lösung ist besser als ein unnötig komplexes System.
+
+## Regel 11: Fortschritt nachvollziehbar halten
+
+Führe eine Entwicklungs-Checkliste.
+
+Kennzeichne:
+
+- Geplant
+- In Arbeit
+- Implementiert
+- Getestet
+- Veröffentlicht
+
+## Regel 12: Ehrlich über Einschränkungen informieren
+
+Wenn eine Funktion wegen Windows-API-Beschränkungen nicht vollständig implementierbar ist, dokumentiere den Grund und liefere die bestmögliche sichere Alternative.
+
+## Regel 13: Keine Daten verlieren
+
+Besonders bei:
+
+- Updates
+- Migrationen
+- Backups
+- Neuplanung
+- Deinstallation
+
+## Regel 14: Keine ungesicherten GitHub-Aktionen
+
+Verwende vorhandene authentifizierte Zugänge.
+
+Falls keine Authentifizierung besteht, fordere diese an.
+
+Speichere niemals persönliche GitHub-Tokens im Repository.
+
+## Regel 15: Konsequente visuelle Qualität
+
+Jede neue Seite muss zum bestehenden Design passen.
+
+Keine zusammengewürfelten Komponenten.
+
+## Regel 16: Keine künstliche Fertigstellung
+
+Wenn ein Modul unvollständig ist, arbeite daran weiter.
+
+Deklariere das Projekt nicht als fertig, nur weil ein Teil funktioniert.
+
+---
+
+# 29. DOKUMENTATION
+
+Erstelle eine ausführliche README.
+
+Sie soll enthalten:
+
+- Projektbeschreibung
+- Screenshots
+- Featureübersicht
+- Systemanforderungen
+- Installation
+- Update-System
+- Architektur
+- Entwicklungsumgebung
+- Build-Anleitung
+- Tests
+- Installer-Erstellung
+- GitHub-Releases
+- Lizenz
+
+## Entwicklerdokumentation
+
+Dokumentiere:
+
+- Projektstruktur
+- Datenbankschema
+- Scheduling-Algorithmus
+- Timer-Architektur
+- Windows-Integration
+- Installer-Modi
+- Update-Prozess
+- Release-Prozess
+
+## Benutzeranleitung
+
+Erkläre:
+
+- Erste Schritte
+- Aufgaben erstellen
+- Projekte verwalten
+- Kalender verwenden
+- AutoPlan verwenden
+- Pomodoro starten
+- Sounds mischen
+- Workspaces erstellen
+- Updates installieren
+- Daten exportieren
+- App deinstallieren
+
+---
+
+# 30. FINALE ABNAHMEKRITERIEN
+
+Das Projekt gilt erst als vollständig, wenn alle folgenden Punkte erfüllt sind.
+
+### Anwendung
+
+- [ ] Native Windows-11-Anwendung
+- [ ] Modernes Fluent-Design
+- [ ] Dark Mode
+- [ ] Light Mode
+- [ ] Funktionierende Navigation
+- [ ] Dashboard
+- [ ] Task Manager
+- [ ] Projekte
+- [ ] Smart Calendar
+- [ ] AutoPlan
+- [ ] Pomodoro
+- [ ] Deep Work
+- [ ] Konzentrationssounds
+- [ ] Sound Mixer
+- [ ] Smart Workspaces
+- [ ] Quick Capture
+- [ ] Productivity Analytics
+- [ ] Daily Review
+- [ ] Einstellungen
+- [ ] Lokale SQLite-Datenbank
+- [ ] Backup und Wiederherstellung
+- [ ] Offline-Funktionalität
+
+### Windows-Integration
+
+- [ ] System Tray
+- [ ] Global Hotkey
+- [ ] Benachrichtigungen
+- [ ] Theme-Erkennung
+- [ ] Geeignete Fokusintegration beziehungsweise dokumentierter Fallback
+- [ ] Korrektes Fensterverhalten
+
+### Installer
+
+- [ ] Installer-EXE vorhanden
+- [ ] Installationsmodus auswählbar
+- [ ] Benutzerinstallation ist Standard
+- [ ] Benutzerinstallation ohne Administratorrechte
+- [ ] Systeminstallation mit korrekter UAC-Abfrage
+- [ ] Startmenüverknüpfung
+- [ ] Optional Desktopverknüpfung
+- [ ] Vollständiger Uninstaller
+- [ ] Updates behalten Daten
+- [ ] Installation auf sauberem Windows-11-System geprüft
+
+### Updates
+
+- [ ] GitHub-Releases-Integration
+- [ ] Automatische Update-Prüfung
+- [ ] Manueller Update-Check
+- [ ] Korrekte Versionsvergleiche
+- [ ] Update-Dialog
+- [ ] Sicherer Download
+- [ ] Integritätsprüfung
+- [ ] Update-Installation
+- [ ] Installationsmodus bleibt erhalten
+- [ ] Keine unnötigen Adminrechte
+- [ ] Fehler werden verständlich behandelt
+
+### GitHub
+
+- [ ] Vollständiger Quellcode auf GitHub
+- [ ] README
+- [ ] Gitignore
+- [ ] GitHub Actions
+- [ ] Automatisierte Tests
+- [ ] Release-Workflow
+- [ ] Versionstag
+- [ ] GitHub Release
+- [ ] Installer als Release Asset
+- [ ] Prüfsummendatei
+- [ ] Release Notes
+- [ ] Repository und Releases erreichbar
+
+### Qualität
+
+- [ ] Keine kritischen Bugs
+- [ ] Erfolgreicher Build
+- [ ] Erfolgreiche automatisierte Tests
+- [ ] Dokumentierte manuelle Tests
+- [ ] Keine bekannten Datenverluste
+- [ ] Keine Fake-Features
+- [ ] Keine unnötigen Berechtigungen
+- [ ] Keine eingebetteten Secrets
+- [ ] Saubere Architektur
+- [ ] Dokumentierter Entwicklungsstand
+
+---
+
+# 31. ERWARTETE ABSCHLUSSBERICHTE
+
+Nach Abschluss des Projekts liefere einen strukturierten Bericht.
+
+## Projektinformationen
+
+- App-Name
+- Version
+- Verwendeter Technologie-Stack
+- Architektur
+- Implementierte Features
+
+## GitHub
+
+- Repository-Link
+- Hauptbranch
+- Letzter Commit
+- Release-Link
+- Release-Version
+
+## Windows-Installer
+
+- Installer-Dateiname
+- Installer-Dateigrösse
+- Unterstützte Architekturen
+- Benutzerinstallationspfad
+- Systeminstallationspfad
+- Information zu digitalen Signaturen
+
+## Testbericht
+
+- Build-Status
+- Testanzahl
+- Erfolgreiche Tests
+- Fehlgeschlagene Tests
+- Manuell geprüfte Funktionen
+- Bekannte Einschränkungen
+
+## Update-System
+
+- GitHub-Repository als Update-Quelle
+- Stable-Version
+- Automatische Prüfung
+- Update-Installationsverfahren
+- Sicherheitsprüfungen
+
+## Offene Punkte
+
+Falls noch etwas fehlt, liste es ehrlich auf.
+
+Keine erfundenen Links, Dateien, Testergebnisse oder Release-Nummern.
+
+---
+
+# 32. DEIN KONKRETER STARTAUFTRAG
+
+Beginne jetzt mit der tatsächlichen Entwicklung von Flowstate.
+
+Gehe folgendermassen vor:
+
+**Schritt 1:** Prüfe die Entwicklungsumgebung und verfügbare Werkzeuge.
+
+**Schritt 2:** Prüfe die aktuellen stabilen Versionen von .NET, WinUI 3, Windows App SDK, Entity Framework Core und Inno Setup.
+
+**Schritt 3:** Entwirf eine saubere und wartbare Architektur.
+
+**Schritt 4:** Richte das GitHub-Repository ein beziehungsweise prüfe ein bestehendes Repository.
+
+**Schritt 5:** Erstelle die vollständige Projektstruktur.
+
+**Schritt 6:** Implementiere das Designsystem und die Hauptnavigation.
+
+**Schritt 7:** Entwickle die Funktionen gemäss den definierten Phasen und Abnahmekriterien.
+
+**Schritt 8:** Führe nach jedem Meilenstein Tests durch, korrigiere Probleme und pushe den geprüften Code zu GitHub.
+
+**Schritt 9:** Erstelle den professionellen Windows-Installer mit standardmässiger Benutzerinstallation ohne Administratorrechte und optionaler systemweiter Installation.
+
+**Schritt 10:** Implementiere und teste das GitHub-Update-System.
+
+**Schritt 11:** Richte den automatischen GitHub-Release-Prozess ein.
+
+**Schritt 12:** Erstelle nach erfolgreicher Qualitätssicherung das endgültige Release mit einer funktionierenden Installer-EXE.
+
+Arbeite systematisch und eigenständig. Priorisiere funktionierenden, sauberen Code und ein hochwertiges Benutzererlebnis.
+
+Verwende keine Platzhalterimplementierungen, um die Arbeit künstlich als abgeschlossen darzustellen.
+
+Veröffentliche nichts, was nicht tatsächlich gebaut wurde.
+
+Falls externe Authentifizierung oder eine ausdrückliche Veröffentlichungsfreigabe notwendig ist, fordere diese zum passenden Zeitpunkt an und setze die übrige Entwicklung fort, soweit möglich.
+
+**DAS FINALE ZIEL:**
+
+Eine echte, moderne, stabile, vollständig installierbare Windows-11-Produktivitäts-App namens **Flowstate**, deren Quellcode auf GitHub liegt, die über GitHub Releases verteilt wird, die automatisch nach Updates sucht und die sich standardmässig ohne Administratorrechte installieren lässt.
+
+Das Endergebnis soll eine Anwendung sein, die man tatsächlich täglich produktiv verwenden kann – nicht bloss ein schönes Konzept.
+
+**BUILD FLOWSTATE. MAKE IT EXCELLENT.**
