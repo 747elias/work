@@ -1,0 +1,25 @@
+<Window
+    x:Class="Flowstate.App.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Flowstate">
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+    <NavigationView PaneTitle="Flowstate" IsBackButtonVisible="Collapsed" IsSettingsVisible="False">
+        <NavigationView.MenuItems>
+            <NavigationViewItem Content="Focus Studio" Icon="Clock" IsSelected="True" />
+        </NavigationView.MenuItems>
+        <StackPanel Padding="48" Spacing="16">
+            <TextBlock Text="Focus Studio" Style="{StaticResource TitleTextBlockStyle}" />
+            <TextBlock x:Name="PhaseText" Text="Fokus" Style="{StaticResource SubtitleTextBlockStyle}" />
+            <TextBlock x:Name="TimeText" Text="25:00" FontSize="96" FontWeight="SemiBold" />
+            <TextBlock x:Name="SessionText" Text="Abgeschlossene Sitzungen: 0" />
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button x:Name="StartPauseButton" Content="Start" Style="{StaticResource AccentButtonStyle}" Click="OnStartPause" />
+                <Button Content="Zuruecksetzen" Click="OnReset" />
+                <Button Content="Ueberspringen" Click="OnSkip" />
+            </StackPanel>
+        </StackPanel>
+    </NavigationView>
+</Window>
